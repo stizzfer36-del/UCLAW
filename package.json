@@ -1,0 +1,14 @@
+{
+  "name": "uclaw",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "verify": "make verify",
+    "desktop:build": "node desktop/build.js",
+    "desktop:doctor": "node desktop/build.js --doctor",
+    "desktop:bundle": "npm --prefix desktop run electron:bundle",
+    "benchmark:voice": "bash scripts/benchmark_voice.sh",
+    "sbom": "python3 scripts/generate_sbom.py",
+    "compliance:review": "bash scripts/run_compliance_review.sh"
+  }
+}

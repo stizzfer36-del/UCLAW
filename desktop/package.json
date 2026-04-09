@@ -1,0 +1,17 @@
+{
+  "name": "uclaw-desktop-shell",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Electron desktop shell assets for UCLAW",
+  "main": "electron/main.js",
+  "scripts": {
+    "build": "node build.js",
+    "doctor": "node build.js --doctor",
+    "electron:dev": "node build.js && electron .",
+    "electron:bundle": "node build.js && electron-builder --dir"
+  },
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
+  }
+}

@@ -1,0 +1,107 @@
+name: security
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: "0 13 * * 1"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.19"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Go test
+        run: go test ./...
+      - name: Desktop asset build
+        run: node desktop/build.js
+      - name: Baseline secret scan
+        run: |
+          if rg -n "secret-anthropic|secret-openrouter" . \
+            --glob '!compliance/evidence/**' \
+            --glob '!.git/**' \
+            --glob '!internal/testingx/**' \
+            --glob '!**/*_test.go' \
+            --glob '!internal/hardening/hardening.go' \
+            --glob '!scripts/run_compliance_review.sh'; then
+            echo "secret-like values found"
+            exit 1
+          fi
+  sast:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - name: Install analyzers
+        run: |
+          GOBIN=$HOME/go/bin go install honnef.co/go/tools/cmd/staticcheck@latest
+          GOBIN=$HOME/go/bin go install github.com/securego/gosec/v2/cmd/gosec@latest
+      - name: Run go vet
+        run: go vet ./...
+      - name: Run staticcheck
+        run: $HOME/go/bin/staticcheck ./...
+      - name: Run gosec
+        run: |
+          mkdir -p compliance/evidence
+          $HOME/go/bin/gosec -fmt json -out compliance/evidence/gosec_latest.json ./...
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sast-evidence
+          path: compliance/evidence/gosec_latest.json
+  sca:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+      - name: Install vulnerability scanner
+        run: GOBIN=$HOME/go/bin go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Run govulncheck
+        run: |
+          mkdir -p compliance/evidence
+          $HOME/go/bin/govulncheck -json ./... > compliance/evidence/govulncheck_latest.json
+      - name: Run npm audit
+        run: |
+          npm audit --json > compliance/evidence/npm_audit_latest.json || test $? -eq 1
+      - name: Generate SBOMs
+        run: python3 scripts/generate_sbom.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sca-evidence
+          path: |
+            compliance/evidence/govulncheck_latest.json
+            compliance/evidence/npm_audit_latest.json
+            compliance/sbom/*.json
+  secrets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  mock-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run NIST SSDF mock audit
+        run: python3 scripts/mock_audit.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mock-audit
+          path: |
+            compliance/evidence/mock_audit_latest.json
+            compliance/evidence/mock_audit_latest.md

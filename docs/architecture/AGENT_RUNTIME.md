@@ -1,5 +1,7 @@
 # Agent Runtime Architecture
 
+This document describes the current agent runtime implemented under `internal/agents/` and `internal/planner/`.
+
 ## Agent as First-Class Identity
 
 Every agent in UCLAW is not an interchangeable prompt — it is a worker with:
@@ -10,7 +12,7 @@ Every agent in UCLAW is not an interchangeable prompt — it is a worker with:
 - **Path Whitelist:** filesystem paths this agent may read/write
 - **Provider Binding:** which LLM backend this agent uses
 - **Audit Emitter:** every action produces a structured audit event
-- **Private Terminal:** dedicated shell session, isolated from other agents
+- **Private Terminal:** represented today as an agent runtime boundary in the local implementation, not yet a packaged multi-terminal desktop process manager
 
 ---
 
@@ -82,5 +84,5 @@ Each agent's handbook is a markdown file at `~/.uclaw/agents/<id>/handbook.md`:
 
 - Tools are registered in `core/policies/tools.yaml`
 - Each tool declares: `name`, `risk_level` (low/medium/high/critical), `requires_approval`
-- High/critical tools require explicit approval in the desktop UI or `uclaw approve <action_id>`
+- High/critical tools require explicit approval in the desktop flow or `uclaw approve <request_id>`
 - Unapproved tool calls are rejected and logged as audit events

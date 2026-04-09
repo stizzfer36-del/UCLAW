@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-04-09",
+  "transcriber": "scripts/offline-stt.sh",
+  "accuracy": 1.0,
+  "cases_passed": 4,
+  "cases_total": 4,
+  "cases": [
+    {
+      "id": "mission-alpha",
+      "audio": "compliance/corpus/voice/mission-alpha.wav",
+      "expected_transcript": "start mission alpha",
+      "actual_transcript": "start mission alpha",
+      "expected_action": "mission_start",
+      "actual_action": "mission_start",
+      "passed": true
+    },
+    {
+      "id": "mission-bravo",
+      "audio": "compliance/corpus/voice/mission-bravo.wav",
+      "expected_transcript": "start mission bravo",
+      "actual_transcript": "start mission bravo",
+      "expected_action": "mission_start",
+      "actual_action": "mission_start",
+      "passed": true
+    },
+    {
+      "id": "mission-charlie",
+      "audio": "compliance/corpus/voice/mission-charlie.wav",
+      "expected_transcript": "start mission charlie",
+      "actual_transcript": "start mission charlie",
+      "expected_action": "mission_start",
+      "actual_action": "mission_start",
+      "passed": true
+    },
+    {
+      "id": "mission-delta",
+      "audio": "compliance/corpus/voice/mission-delta.wav",
+      "expected_transcript": "start mission delta",
+      "actual_transcript": "start mission delta",
+      "expected_action": "mission_start",
+      "actual_action": "mission_start",
+      "passed": true
+    }
+  ]
+}

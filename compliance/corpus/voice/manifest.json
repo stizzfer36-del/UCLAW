@@ -1,0 +1,28 @@
+{
+  "cases": [
+    {
+      "id": "mission-alpha",
+      "audio": "compliance/corpus/voice/mission-alpha.wav",
+      "expected_transcript": "start mission alpha",
+      "expected_action": "mission_start"
+    },
+    {
+      "id": "mission-bravo",
+      "audio": "compliance/corpus/voice/mission-bravo.wav",
+      "expected_transcript": "start mission bravo",
+      "expected_action": "mission_start"
+    },
+    {
+      "id": "mission-charlie",
+      "audio": "compliance/corpus/voice/mission-charlie.wav",
+      "expected_transcript": "start mission charlie",
+      "expected_action": "mission_start"
+    },
+    {
+      "id": "mission-delta",
+      "audio": "compliance/corpus/voice/mission-delta.wav",
+      "expected_transcript": "start mission delta",
+      "expected_action": "mission_start"
+    }
+  ]
+}

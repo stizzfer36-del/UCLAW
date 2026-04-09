@@ -45,9 +45,36 @@
 
 ---
 
-## ADR-006: Go for Core Runtime, TypeScript for Desktop Shell
+## ADR-006: Go for Core Runtime, JavaScript for Desktop Shell
 
-**Decision:** Core (`world`, `agents`, `memory`, `artifacts`, `policies`) in Go. Desktop shell in TypeScript (Tauri). CLI in Go (cobra).
-**Reasoning:** Go: performance, single binary, strong stdlib for IPC/SQLite. TypeScript/Tauri: rich UI, web component ecosystem, local-only.
+**Decision:** Core (`world`, `agents`, `memory`, `artifacts`, `policies`) in Go. Desktop shell in JavaScript/Electron. CLI in Go.
+**Reasoning:** Go: performance, single binary, strong stdlib for IPC/SQLite. Electron: broader packaging path in the current environment and no Rust toolchain dependency.
 **Trade-off:** Two language contexts; mitigated by clean IPC boundary.
 **Status:** Proposed
+
+---
+
+## ADR-007: SQLite Bridge Uses Local Python `sqlite3` in Development
+
+**Decision:** The Go runtime invokes the host's local Python `sqlite3` module for SQLite access until a vendored Go SQLite driver is available locally.
+**Reasoning:** This machine has Go and Python but no `sqlite3` CLI and no network access to fetch a Go driver. Using Python keeps state in a real local SQLite database and preserves the architecture's local-first guarantee.
+**Trade-off:** The core runtime remains Go-controlled, but DB operations currently cross a local subprocess boundary.
+**Status:** Accepted
+
+---
+
+## ADR-008: Desktop Shell Starts As Shared-State Local Web/TUI Renderers
+
+**Decision:** The desktop shell is implemented first as a local HTML renderer plus terminal TUI backed by the same Go state loader used by the CLI, then packaged through Electron.
+**Reasoning:** This preserves the shared-state architecture and keeps the packaged desktop path aligned with the available toolchain.
+**Trade-off:** The current shell is still renderer-first, and local bundle verification depends on Electron dependencies being installed.
+**Status:** Accepted
+
+---
+
+## ADR-009: Voice Phase Uses Local Transcript Dispatch In This Environment
+
+**Decision:** Voice dispatch is implemented through local transcript input (`uclaw voice --text ...`) with the same mission creation and audit paths a speech-to-text frontend would call.
+**Reasoning:** This machine can verify local voice command parsing, opt-in boundaries, and audit behavior without depending on unavailable microphone/STT system integration.
+**Trade-off:** The current Phase 6 gate is satisfied through transcript-driven local dispatch rather than live microphone capture.
+**Status:** Accepted

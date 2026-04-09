@@ -1,8 +1,8 @@
 # UCLAW — Sovereign Engineering Habitat
 
-> **Status:** Prototype scaffold — architecture-first, implementation follows.
-> This is not a terminal chatbot. Not a VS Code plugin. Not a better CLI.
-> UCLAW is the place an engineer opens first.
+> **Status:** Local-first runtime prototype with working core systems.
+> The repository is no longer just an architecture scaffold: the Go runtime, SQLite world state, audit log, mission flow, artifact verification, memory vault, planner, desktop renderers, and transcript-driven voice dispatch are implemented and tested.
+> It is still not literally roadmap-complete in the last-mile areas called out in `docs/roadmap/PHASES.md`.
 
 ---
 
@@ -50,40 +50,53 @@ UCLAW/
 │   ├── verification/
 │   ├── security/
 │   └── roadmap/
-├── core/                     # Core runtime modules
-│   ├── world/                # World state graph
-│   ├── agents/               # Agent runtime & orchestration
+├── cmd/uclaw/                # CLI entry point
+├── internal/                 # Runtime implementation
+│   ├── app/                  # Command routing and orchestration
+│   ├── world/                # World state graph and migrations
+│   ├── agents/               # Agent runtime, approvals, handbooks
 │   ├── memory/               # Knowledge graph vault
-│   ├── artifacts/            # Artifact tracker
-│   ├── voice/                # Voice dispatch layer
-│   └── policies/             # Policy engine
-├── cli/                      # uclaw CLI entry point
-├── desktop/                  # Spatial desktop shell
-├── integrations/             # External provider adapters
-├── verification/             # Verifier teams, test matrices, review queues
-├── observability/            # Audit events, budget tracking, health panels
+│   ├── artifacts/            # Artifact tracker and verification
+│   ├── missions/             # Mission flow, checkpoints, review
+│   ├── planner/              # Planner and team orchestration
+│   ├── observability/        # Status, health, budget, desktop state
+│   ├── hardening/            # Recovery, policy, sync, plugins, docs
+│   ├── voice/                # Transcript-driven dispatch layer
+│   └── audit/                # Structured append-only audit stream
+├── core/                     # Shared policy/schema assets
+├── desktop/                  # Local HTML/TUI desktop shell assets
 ├── scripts/                  # Dev tooling
 └── .uclaw/                   # Local env, secrets (gitignored)
 ```
 
----
+## Current Capability
 
-## Quick Start (scaffold)
+- `uclaw init` creates the local layout, world database, and audit stream.
+- `uclaw agent`, `memory`, `artifact`, `mission`, `plan`, `review`, `override`, `status`, `health`, `budget`, `policy`, `desktop`, `voice`, `sync`, `plugin`, and `docs` all route through the Go runtime today.
+- The desktop surface now includes a real Electron project scaffold under `desktop/electron/`, plus the existing shared-state HTML/TUI renderer.
+- Voice supports transcript/file dispatch and a live local capture/STT command path.
+- Sync now exports and imports peer packages, serves/pulls/pushes over HTTP, applies canonical merge rules by file class, and keeps database files conflict-oriented.
+
+## Quick Start
 
 ```bash
 git clone https://github.com/stizzfer36-del/UCLAW
 cd UCLAW
-cp .uclaw/.env.example .uclaw/.env
-# fill in provider keys
-bash scripts/bootstrap.sh
-uclaw
+GOCACHE=/tmp/uclaw-gocache go test ./...
+go run ./cmd/uclaw init
+go run ./cmd/uclaw status
+go run ./cmd/uclaw desktop --html
 ```
-
----
 
 ## Phases
 
 See [`docs/roadmap/PHASES.md`](docs/roadmap/PHASES.md) for the full build-verify-run breakdown.
+
+For the current code-backed status and handoff caveats, start with:
+
+- [`docs/architecture/HANDOFF.md`](docs/architecture/HANDOFF.md)
+- [`docs/architecture/OVERVIEW.md`](docs/architecture/OVERVIEW.md)
+- [`docs/roadmap/PHASES.md`](docs/roadmap/PHASES.md)
 
 ---
 

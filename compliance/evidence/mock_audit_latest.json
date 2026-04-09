@@ -1,0 +1,135 @@
+{
+  "generated_at": "2026-04-09",
+  "matrix": "compliance/mappings/NIST_SSDF_MATRIX.md",
+  "controls": [
+    {
+      "control": "PO.1 Define security requirements",
+      "requirement": "`compliance/policies/SECURE_DEVELOPMENT_POLICY.md`",
+      "references": [
+        {
+          "path": "compliance/policies/",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "PO.3 Define roles and responsibilities",
+      "requirement": "repo owners and reviewer expectations in policy",
+      "references": [
+        {
+          "path": "compliance/policies/",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "PO.5 Protect development environments",
+      "requirement": "local-first state, secrets isolation, policy gates",
+      "references": [
+        {
+          "path": "docs/security/SECURITY_ARCHITECTURE.md",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "PS.2 Review software for vulnerabilities",
+      "requirement": "test suite, audit checks, findings register",
+      "references": [
+        {
+          "path": "compliance/findings/",
+          "present": true
+        },
+        {
+          "path": "compliance/evidence/",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "PW.4 Manage third-party software",
+      "requirement": "package manifests plus SBOM location",
+      "references": [
+        {
+          "path": "go.mod",
+          "present": true
+        },
+        {
+          "path": "package.json",
+          "present": true
+        },
+        {
+          "path": "compliance/sbom/",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "PW.5 Follow secure coding practices",
+      "requirement": "secure development policy, code review, tests",
+      "references": [
+        {
+          "path": "compliance/policies/",
+          "present": true
+        },
+        {
+          "path": "internal/*_test.go",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "PW.8 Reuse trusted software",
+      "requirement": "controlled policy registry and local runtime assets",
+      "references": [
+        {
+          "path": "core/policies/",
+          "present": true
+        },
+        {
+          "path": "desktop/",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "RV.1 Identify and confirm vulnerabilities",
+      "requirement": "findings register and security workflow",
+      "references": [
+        {
+          "path": "compliance/findings/",
+          "present": true
+        },
+        {
+          "path": ".github/workflows/security.yml",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    },
+    {
+      "control": "RV.3 Analyze and remediate vulnerabilities",
+      "requirement": "remediation branches and evidence updates",
+      "references": [
+        {
+          "path": "compliance/findings/",
+          "present": true
+        },
+        {
+          "path": "compliance/exceptions/",
+          "present": true
+        }
+      ],
+      "status": "pass"
+    }
+  ],
+  "passed": 9,
+  "failed": 0
+}

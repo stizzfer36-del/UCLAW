@@ -1,72 +1,92 @@
 # UCLAW Architecture Overview
 
-## Philosophy
+## Guiding Principle
 
-UCLAW is not a chatbot wrapper. It is a **sovereign engineering habitat**:
-a local-first OS layer that owns world-state, missions, agents, memory,
-artifacts, and policies — and treats every external framework as a
-pluggable *capability*, not a foundation.
+The habitat owns the workflow, not the vendors.
+Every external provider (Anthropic, OpenRouter, local model, CAD tool) plugs in behind a capability layer.
+The user's local state graph is the single source of truth.
 
-## Layered Model
+This document describes the architecture implemented in the current repository, not an aspirational future layout.
+
+---
+
+## Five Integrated Subsystems
+
+### 1. CLI Surface (`cmd/uclaw/`, `internal/app/`)
+- Entry point: `uclaw [command]`
+- Scripting surface for all habitat operations
+- Launches desktop shell or runs headless agent jobs
+- Connects to the shared world state graph over a local IPC/socket and direct local runtime calls
+
+### 2. Spatial Desktop Shell (`desktop/`, `internal/observability/`)
+- Three-panel layout:
+  - **Left sidebar:** Offices → Teams → Members tree
+  - **Center canvas:** Up to 6 live panes (terminal, code, doc, CAD, browser, notebook)
+  - **Right rail:** Agent roster, workflow queue, status, health
+- Built today as a shared-state local HTML renderer plus terminal-first fallback (TUI), with an Electron project scaffold for packaging
+- Pane types: terminal, markdown editor, code editor, browser iframe, CAD viewer, diff view
+
+### 3. Multi-Agent Runtime (`internal/agents/`, `internal/planner/`)
+- Lead agent + sub-agent hierarchy
+- Team orchestration: Planner → Dev Team → Verifier Team
+- Each agent is a first-class identity with:
+  - Own terminal session
+  - Private engineering handbook (reasoning style, citation rules, log format)
+  - Allowed capability set (tools, paths, providers)
+  - Audit event emitter
+- Supports: Claude (Anthropic), OpenRouter models, local (Ollama/LM Studio), custom
+
+### 4. Memory Vault (`internal/memory/`)
+- Local-first markdown + frontmatter knowledge graph
+- Nodes: decisions, prompts, source links, agent logs, meeting notes
+- Edges: `caused-by`, `verified-by`, `supersedes`, `cites`
+- Obsidian-compatible folder structure (can open in Obsidian as a side window)
+- Graph query API used by agents and desktop canvas
+
+### 5. Artifact System (`internal/artifacts/`, `internal/missions/`)
+- Tracks: code files, docs, slides, CAD specs, test reports, screenshots
+- Each artifact has: origin agent, source citations, verification status, sign-off chain
+- Unprovenanced artifacts flagged as lower trust (visible in UI)
+- Git-integrated: artifact records map to commits/branches
+
+## Current Late-Phase Reality
+
+- Observability is implemented through status, health, budget, workflow, error, and timeline loaders backed by the same local state as the CLI.
+- Voice is implemented as transcript/file dispatch plus live local capture/STT command execution.
+- Hardening includes policy tightening, checkpoint-based recovery, merge-aware peer sync with conflict artifacts, plugin scaffolding, docs generation, and secret scanning.
+- The repo includes an Electron scaffold, but this workspace has not installed Electron dependencies, so a bundled app is not locally verified here.
+
+---
+
+## Integration Architecture Diagram
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│  CLI  (uclaw)              ← canonical control surface   │
-├─────────────────────────────────────────────────────────┤
-│  IPC Server  (.uclaw/uclaw.sock)   ← daemon interface    │
-├─────────────────────────────────────────────────────────┤
-│  Core Runtime                                            │
-│    world/     — SQLite world graph                       │
-│    agents/    — agent registry + policy gate             │
-│    memory/    — FTS5 knowledge vault                     │
-│    artifacts/ — artifact tracker + trust levels          │
-│    observability/ — chained audit log                    │
-├─────────────────────────────────────────────────────────┤
-│  Capability Layer  (core/integrations/)                  │
-│    fabric/          — prompt/pattern workflows           │
-│    codex/           — local code editing (OpenAI Codex)  │
-│    local_llm/       — Ollama / LM Studio providers       │
-│    voltagent/       — TS multi-agent platform            │
-│    praisonai/       — Python multi-agent framework       │
-│    agent_framework/ — Microsoft AutoGen orchestration    │
-│    observer/        — local model orchestrator           │
-│    ros2/            — robotics middleware (ROS2)         │
-│    iot_mqtt/        — IoT device control (MQTT)          │
-│    doc_parser/      — PDF/DOCX/MD ingestion              │
-│    cad/             — FreeCAD headless inspection        │
-├─────────────────────────────────────────────────────────┤
-│  Policy Engine  (core/policies/tools.yaml +              │
-│                  core/policies/integrations.yaml)        │
-│    risk_level, requires_approval, whitelist, role gate   │
-├─────────────────────────────────────────────────────────┤
-│  Verification System  (verification/)                    │
-│    checklist.yaml — trust tier checks                    │
-│    review_queue.go — pending/approve/reject              │
-└─────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────┐
+│                   UCLAW Habitat                  │
+│                                                 │
+│  ┌──────────┐  ┌──────────────┐  ┌───────────┐ │
+│  │   CLI    │  │ Desktop Shell│  │  Voice    │ │
+│  └────┬─────┘  └──────┬───────┘  └─────┬─────┘ │
+│       └───────────────┼────────────────┘        │
+│                       ▼                         │
+│            ┌──────────────────┐                 │
+│            │  World State IPC │                 │
+│            └────────┬─────────┘                 │
+│    ┌────────────────┼────────────────┐           │
+│    ▼                ▼               ▼           │
+│ ┌──────┐      ┌─────────┐     ┌──────────┐      │
+│ │Memory│      │ Agents  │     │Artifacts │      │
+│ │Vault │      │Runtime  │     │ Tracker  │      │
+│ └──────┘      └────┬────┘     └──────────┘      │
+│                    │                            │
+│              ┌─────▼──────┐                     │
+│              │ Capability │                     │
+│              │   Layer    │                     │
+│              └─────┬──────┘                     │
+└────────────────────┼────────────────────────────┘
+                     │
+     ┌───────────────┼───────────────┐
+     ▼               ▼               ▼
+  Anthropic     OpenRouter      Local Models
+  (Claude)       (multi)        (Ollama etc)
 ```
-
-## World Model
-
-```
-World → Offices → Teams → Members → Machines → Rooms
-     → Missions → Memory → Artifacts → Capabilities → Policies
-```
-
-All external OSS plugs in **under** this model — never beside it.
-
-## Integration Contract
-
-Every integration must:
-1. Live under `core/integrations/<name>/`.
-2. Expose a Go adapter (`adapter.go`) with typed, error-returning functions.
-3. Register its tools in `core/policies/integrations.yaml`.
-4. Have every tool call pass through `agents.CheckTool()` before executing.
-5. Emit an `observability.Audit` event on every call (pending implementation).
-
-## Key Invariants
-
-- **No external framework owns world state.** Fabric, AutoGen, VoltAgent, etc.
-  are all tools. UCLAW's SQLite DB is the single source of truth.
-- **Every tool call is policy-gated.** No integration bypasses `CheckTool()`.
-- **Audit log is append-only and chained** (SHA-256 prev-hash chain).
-- **Artifacts have provenance.** Trust levels: `provenanced` → `partially-provenanced` → `unprovenanced`.

@@ -43,7 +43,7 @@ World (singleton)
 - Format: SQLite (primary) + JSON snapshots (for portability)
 - Location: `~/.uclaw/world.db`
 - Replicated on each mission checkpoint to `~/.uclaw/checkpoints/`
-- Queryable via CLI: `uclaw world inspect --node <id>`
+- Queryable via CLI: `uclaw world inspect --node <id>` and mission/status subcommands through the same local state
 
 ---
 
@@ -52,10 +52,11 @@ World (singleton)
 | Event | Transition |
 |---|---|
 | `uclaw init` | Create World node, default Office + Team |
-| `uclaw office new <name>` | Add Office to World |
-| `uclaw team new <name> --role dev` | Add Team to Office |
 | `uclaw agent spawn <name>` | Add Member (agent) to Team |
 | `uclaw mission start <title>` | Create Mission in current Room |
 | Agent completes task | Mission status → `complete`, artifact added |
 | Verifier signs off | Artifact verification status → `verified` |
 | Policy violation | Mission status → `blocked`, audit event emitted |
+
+The current CLI does not yet expose first-class `office` or `team` creation commands.
+Those remain part of the world model design, not the present command surface.

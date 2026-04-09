@@ -1,0 +1,6 @@
+{
+  "node": "v18.20.4",
+  "platform": "linux",
+  "electron": "missing",
+  "electron_builder": "missing"
+}

@@ -61,8 +61,8 @@ uclaw memory graph --mission <id> --depth 2
 # Search full-text across vault
 uclaw memory search "capability layer security"
 
-# Show unverified claims in recent logs
-uclaw memory audit --unverified --since 7d
+# Show unverified claims
+uclaw memory audit
 ```
 
 ---

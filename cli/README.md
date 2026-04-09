@@ -15,15 +15,6 @@ uclaw [command] [flags]
 uclaw init                          # Initialize a new UCLAW world
 uclaw world inspect                 # Show world state summary
 uclaw world inspect --node <id>     # Inspect a specific node
-uclaw world restore --checkpoint <id> --confirm  # Restore world state
-```
-
-### Offices & Teams
-```bash
-uclaw office new <name>             # Create a new office
-uclaw office list                   # List all offices
-uclaw team new <name> --role dev    # Create a team in current office
-uclaw team list                     # List teams
 ```
 
 ### Agents
@@ -48,25 +39,30 @@ uclaw mission rollback <id>         # Roll back mission state
 
 ### Memory
 ```bash
+uclaw memory create --type decision --title "ADR" --content "..."   # Create a vault node
+uclaw memory link --from <node_a> --to <node_b> --edge caused-by    # Link two nodes
 uclaw memory search <query>         # Full-text vault search
 uclaw memory query --type decision  # Query by node type
 uclaw memory graph --mission <id>   # Show mission memory graph
-uclaw memory audit --unverified     # Show unverified claims
+uclaw memory audit                  # Show unverified claims
 ```
 
 ### Artifacts
 ```bash
-uclaw artifact list                 # List artifacts for current mission
+uclaw artifact create --title "Spec" --type doc --path /tmp/spec.md --agent <id> --mission <id> --sources url:https://example.com
+uclaw artifact list --mission <id>  # List artifacts for a mission
 uclaw artifact show <id>            # Show artifact + checks
+uclaw artifact verify <id> --verifier <id> --test-command "true" --workspace ~/.uclaw
 uclaw artifact flag <id>            # Flag artifact for re-verification
-uclaw artifact sign <id>            # Sign off on artifact
+uclaw artifact sign <id> --by <agent_id>  # Sign off on artifact
 uclaw artifact revert <id> --to <sha>  # Revert artifact to git SHA
 ```
 
 ### Observability
 ```bash
 uclaw status                        # Mission + agent dashboard
-uclaw audit --since 1h              # Show recent audit events
+uclaw audit                         # Show full audit log
+uclaw audit verify                  # Verify audit chain integrity
 uclaw budget                        # Show token + cost usage
 uclaw health                        # Show agent + provider health
 uclaw pause --all                   # Pause all agents
@@ -77,6 +73,17 @@ uclaw policy tighten --tool <name>  # Increase tool risk level
 
 ### Voice
 ```bash
-uclaw voice                         # Start voice input mode
-uclaw voice --tts                   # Enable TTS feedback
+uclaw voice --text "start mission alpha"                   # Dispatch from transcript
+uclaw voice --file /tmp/brief.txt                         # Dispatch from transcript file
+uclaw voice --live --capture-command "..." --stt-command "..."  # Capture and transcribe locally
+uclaw voice --audio /tmp/clip.wav --stt-command "..." --transcript-only  # Transcribe only
+```
+
+### Sync
+```bash
+uclaw sync export peer-a                                  # Export peer package to disk
+uclaw sync import /tmp/sync-peer-a.json                   # Import peer package from disk
+uclaw sync serve --listen 127.0.0.1:44144                 # Serve HTTP peer transport
+uclaw sync pull --from http://127.0.0.1:44144 --peer peer-a  # Pull package over HTTP
+uclaw sync push --to http://127.0.0.1:44144 --peer peer-a    # Push package over HTTP
 ```

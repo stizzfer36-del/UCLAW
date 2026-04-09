@@ -1,5 +1,6 @@
--- UCLAW World State Schema
--- SQLite
+-- UCLAW World State Schema Snapshot
+-- The authoritative schema is the migration set under core/world/migrations/.
+-- This file mirrors the currently implemented Phase 0-4 schema.
 
 CREATE TABLE IF NOT EXISTS world (
     id TEXT PRIMARY KEY,
@@ -72,17 +73,40 @@ CREATE TABLE IF NOT EXISTS missions (
     updated_at TEXT NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS agent_profiles (
+    id TEXT PRIMARY KEY,
+    member_id TEXT NOT NULL REFERENCES members(id),
+    role TEXT NOT NULL,
+    provider TEXT NOT NULL,
+    status TEXT NOT NULL,
+    trust_score INTEGER NOT NULL DEFAULT 100,
+    created_at TEXT NOT NULL,
+    retired_at TEXT
+);
+
+CREATE TABLE IF NOT EXISTS approval_requests (
+    id TEXT PRIMARY KEY,
+    agent_id TEXT NOT NULL,
+    tool_name TEXT NOT NULL,
+    target TEXT,
+    status TEXT NOT NULL CHECK(status IN ('pending','approved','denied')),
+    requested_at TEXT NOT NULL,
+    decided_at TEXT,
+    decided_by TEXT
+);
+
 CREATE TABLE IF NOT EXISTS artifacts (
     id TEXT PRIMARY KEY,
-    mission_id TEXT NOT NULL REFERENCES missions(id),
     title TEXT NOT NULL,
     type TEXT NOT NULL,
-    path TEXT,
+    path TEXT NOT NULL,
     origin_agent TEXT NOT NULL,
-    trust_level TEXT NOT NULL CHECK(trust_level IN ('provenanced','partially-provenanced','unprovenanced')),
+    mission_id TEXT NOT NULL,
+    created_at TEXT NOT NULL,
     verification_status TEXT NOT NULL CHECK(verification_status IN ('pending','in-review','verified','failed','disputed')),
     git_ref TEXT,
-    created_at TEXT NOT NULL
+    trust_level TEXT NOT NULL CHECK(trust_level IN ('provenanced','partially-provenanced','unprovenanced')),
+    claim_count INTEGER NOT NULL DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS artifact_sources (
@@ -99,21 +123,32 @@ CREATE TABLE IF NOT EXISTS artifact_checks (
     check_type TEXT NOT NULL,
     status TEXT NOT NULL CHECK(status IN ('pending','passed','failed')),
     run_by TEXT,
-    run_at TEXT
+    run_at TEXT,
+    details TEXT
 );
 
-CREATE TABLE IF NOT EXISTS audit_events (
+CREATE TABLE IF NOT EXISTS artifact_signoffs (
     id TEXT PRIMARY KEY,
-    timestamp TEXT NOT NULL,
-    agent_id TEXT NOT NULL,
-    action TEXT NOT NULL,
-    target TEXT,
-    outcome TEXT NOT NULL,
-    mission_id TEXT,
-    tool_name TEXT,
-    approval_required INTEGER NOT NULL DEFAULT 0,
-    approval_granted INTEGER,
-    prev_event_hash TEXT
+    artifact_id TEXT NOT NULL REFERENCES artifacts(id),
+    signed_by TEXT NOT NULL,
+    signed_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS artifact_versions (
+    id TEXT PRIMARY KEY,
+    artifact_id TEXT NOT NULL REFERENCES artifacts(id),
+    git_ref TEXT NOT NULL,
+    path TEXT NOT NULL,
+    recorded_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS review_queue (
+    id TEXT PRIMARY KEY,
+    artifact_id TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    status TEXT NOT NULL CHECK(status IN ('open','overridden','resolved')),
+    created_at TEXT NOT NULL,
+    resolved_at TEXT
 );
 
 CREATE TABLE IF NOT EXISTS checkpoints (
@@ -122,4 +157,30 @@ CREATE TABLE IF NOT EXISTS checkpoints (
     trigger TEXT NOT NULL,
     created_at TEXT NOT NULL,
     snapshot_path TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS timeline_events (
+    id TEXT PRIMARY KEY,
+    mission_id TEXT NOT NULL REFERENCES missions(id),
+    event_type TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS handbook_amendments (
+    id TEXT PRIMARY KEY,
+    agent_id TEXT NOT NULL,
+    reason TEXT NOT NULL,
+    path TEXT NOT NULL,
+    created_at TEXT NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS token_usage (
+    id TEXT PRIMARY KEY,
+    mission_id TEXT,
+    agent_id TEXT,
+    provider TEXT NOT NULL,
+    tokens INTEGER NOT NULL,
+    cost REAL NOT NULL,
+    created_at TEXT NOT NULL
 );

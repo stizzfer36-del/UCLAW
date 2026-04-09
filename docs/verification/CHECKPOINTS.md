@@ -36,8 +36,8 @@ uclaw mission replay <mission_id> --from <checkpoint_id>
 # Diff two checkpoints
 uclaw mission diff <checkpoint_a> <checkpoint_b>
 
-# Restore world state to a checkpoint (destructive)
-uclaw world restore --checkpoint <checkpoint_id> --confirm
+# Restore the latest mission checkpoint
+uclaw mission rollback <mission_id>
 ```
 
 ---

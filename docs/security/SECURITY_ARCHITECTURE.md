@@ -23,7 +23,7 @@ The habitat enforces trust boundaries at every layer.
 - All secrets live in `.uclaw/.env` (gitignored)
 - No secrets in `world.db`, configs, or agent handbooks
 - Secrets accessed via `uclaw secrets get <key>` which logs the access
-- Rotation: `uclaw secrets rotate <key>` — updates env, logs rotation event
+- Rotation is currently a manual operator process; there is no `uclaw secrets rotate` command yet
 
 ---
 

@@ -1,34 +1,34 @@
 #!/usr/bin/env bash
-# UCLAW bootstrap — sets up the dev environment.
+# UCLAW Bootstrap Script
+# Sets up the local development environment
+
 set -euo pipefail
 
-echo "==> UCLAW bootstrap"
+echo "==> UCLAW Bootstrap"
 
-# Create local env directory
-mkdir -p .uclaw/vault
+# Check dependencies
+command -v go >/dev/null 2>&1 || { echo "ERROR: Go is required (https://go.dev/dl/)"; exit 1; }
+command -v node >/dev/null 2>&1 || { echo "WARNING: Node.js not found — desktop shell will not build"; }
+command -v sqlite3 >/dev/null 2>&1 || { echo "WARNING: sqlite3 CLI not found — schema inspection limited"; }
 
-# Copy env example if not present
-if [ ! -f .uclaw/.env ]; then
-  cp .uclaw/.env.example .uclaw/.env 2>/dev/null || true
-  echo "  Created .uclaw/.env — fill in your provider keys."
+echo "==> Checking .uclaw directory"
+mkdir -p ~/.uclaw/vault/decisions
+mkdir -p ~/.uclaw/vault/prompts
+mkdir -p ~/.uclaw/vault/sources
+mkdir -p ~/.uclaw/vault/logs
+mkdir -p ~/.uclaw/vault/notes
+mkdir -p ~/.uclaw/vault/research
+mkdir -p ~/.uclaw/checkpoints
+mkdir -p ~/.uclaw/agents
+mkdir -p ~/.uclaw/audit
+
+if [ ! -f ~/.uclaw/.env ]; then
+  cp .uclaw/.env.example ~/.uclaw/.env
+  echo "==> Created ~/.uclaw/.env from example — fill in your provider keys"
 fi
 
-# Check Go
-if ! command -v go &>/dev/null; then
-  echo "  ERROR: Go not found. Install from https://go.dev/dl/"
-  exit 1
-fi
-echo "  Go: $(go version)"
+echo "==> Building CLI (stub)"
+go build -o ./uclaw ./cmd/uclaw
 
-# Tidy dependencies
-go mod tidy 2>/dev/null || echo "  (go mod tidy skipped — no network or missing deps)"
-
-# Build CLI
-echo "==> Building uclaw CLI..."
-go build -o bin/uclaw ./cli/ 2>/dev/null && echo "  Built: ./bin/uclaw" || echo "  Build skipped (CGo/sqlite3 may need: apt-get install gcc libsqlite3-dev)"
-
-echo ""
-echo "==> Done. Next steps:"
-echo "  1. Edit .uclaw/.env with your API keys"
-echo "  2. ./bin/uclaw daemon   # start the runtime"
-echo "  3. ./bin/uclaw --help   # explore commands"
+echo "==> Bootstrap complete."
+echo "    Next: fill in ~/.uclaw/.env, then run: ./uclaw init"
