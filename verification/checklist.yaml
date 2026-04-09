@@ -1,0 +1,36 @@
+# UCLAW Verification Checklist
+# Each artifact must pass all checks at its trust tier before promotion.
+
+tiers:
+  - name: provenanced
+    checks:
+      - id: source_cited
+        description: Every claim has a source URL or vault_node reference
+        auto: true
+      - id: git_ref_present
+        description: Artifact has a git_ref (commit SHA or tag)
+        auto: true
+      - id: verifier_sign_off
+        description: A verify-role agent has signed off
+        auto: false
+        requires_role: verify
+      - id: human_review
+        description: A human has reviewed the artifact
+        auto: false
+        requires_human: true
+
+  - name: partially-provenanced
+    checks:
+      - id: source_cited
+        description: At least one source cited
+        auto: true
+      - id: verifier_sign_off
+        description: Verifier agent reviewed
+        auto: false
+        requires_role: verify
+
+  - name: unprovenanced
+    checks:
+      - id: sanity_check
+        description: Basic format/content sanity
+        auto: true

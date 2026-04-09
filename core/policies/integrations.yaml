@@ -1,0 +1,110 @@
+# UCLAW Integration Tool Registry
+# Tools exposed by integration adapters — appended to tools.yaml rules.
+
+tools:
+  # ── Fabric (prompt/pattern layer) ──────────────────────────────────────────
+  - name: fabric_run_pattern
+    description: Execute a Fabric prompt pattern against content
+    risk_level: low
+    requires_approval: false
+    integration: fabric
+    path_whitelist_required: false
+
+  - name: fabric_list_patterns
+    description: List all available Fabric patterns
+    risk_level: low
+    requires_approval: false
+    integration: fabric
+
+  # ── Codex (local code editing / build) ─────────────────────────────────────
+  - name: codex_edit
+    description: Apply a natural-language edit to a file via Codex CLI
+    risk_level: medium
+    requires_approval: false
+    path_whitelist_required: true
+    integration: codex
+
+  - name: codex_build
+    description: Build a project via Codex
+    risk_level: medium
+    requires_approval: false
+    integration: codex
+
+  # ── Local LLM (Ollama / LM Studio) ─────────────────────────────────────────
+  - name: llm_generate
+    description: Send a prompt to a local model endpoint
+    risk_level: low
+    requires_approval: false
+    integration: local_llm
+
+  - name: llm_embed
+    description: Compute an embedding vector via local model
+    risk_level: low
+    requires_approval: false
+    integration: local_llm
+
+  # ── VoltAgent (TS multi-agent) ──────────────────────────────────────────────
+  - name: voltagent_spawn
+    description: Spawn a VoltAgent sub-agent task
+    risk_level: medium
+    requires_approval: false
+    requires_role: lead
+    integration: voltagent
+
+  - name: voltagent_status
+    description: Query a VoltAgent task status
+    risk_level: low
+    requires_approval: false
+    integration: voltagent
+
+  # ── PraisonAI (multi-agent research/coding) ─────────────────────────────────
+  - name: praison_run_crew
+    description: Execute a PraisonAI crew/plan
+    risk_level: medium
+    requires_approval: false
+    requires_role: lead
+    integration: praisonai
+
+  # ── ROS2 / Robotics ─────────────────────────────────────────────────────────
+  - name: ros_call_service
+    description: Call a ROS2 service via CLI wrapper
+    risk_level: high
+    requires_approval: true
+    integration: ros2
+    topic_whitelist_required: true
+
+  - name: ros_publish_topic
+    description: Publish to a ROS2 topic
+    risk_level: high
+    requires_approval: true
+    integration: ros2
+    topic_whitelist_required: true
+
+  # ── IoT / MQTT ──────────────────────────────────────────────────────────────
+  - name: iot_toggle_device
+    description: Toggle an IoT device via MQTT
+    risk_level: high
+    requires_approval: true
+    integration: iot_mqtt
+    device_whitelist_required: true
+
+  - name: iot_read_sensor
+    description: Read a sensor value via MQTT
+    risk_level: low
+    requires_approval: false
+    integration: iot_mqtt
+
+  # ── CAD / Doc Parsers ────────────────────────────────────────────────────────
+  - name: doc_parse
+    description: Parse a document (PDF, DOCX, MD) into structured text
+    risk_level: low
+    requires_approval: false
+    path_whitelist_required: true
+    integration: doc_parser
+
+  - name: cad_inspect
+    description: Inspect a CAD file and return metadata/BOM
+    risk_level: low
+    requires_approval: false
+    path_whitelist_required: true
+    integration: cad
