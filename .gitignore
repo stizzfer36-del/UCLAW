@@ -1,0 +1,34 @@
+# UCLAW .gitignore
+
+# Local env & secrets — NEVER commit
+.uclaw/.env
+.uclaw/world.db
+.uclaw/audit.jsonl
+.uclaw/checkpoints/
+.uclaw/agents/
+.uclaw/vault/
+
+# Build outputs
+build/
+dist/
+*.exe
+uclaw
+
+# Go
+*.o
+*.a
+*.so
+vendor/
+
+# Node
+node_modules/
+.next/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp

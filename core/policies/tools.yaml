@@ -1,0 +1,77 @@
+# UCLAW Tool Registry
+# Defines all agent-callable tools, their risk levels, and approval requirements.
+
+tools:
+  - name: read_file
+    description: Read a file from the filesystem
+    risk_level: low
+    requires_approval: false
+    path_whitelist_required: true
+
+  - name: write_file
+    description: Write or overwrite a file
+    risk_level: medium
+    requires_approval: false
+    path_whitelist_required: true
+
+  - name: append_file
+    description: Append content to a file
+    risk_level: low
+    requires_approval: false
+    path_whitelist_required: true
+
+  - name: delete_file
+    description: Delete a file
+    risk_level: high
+    requires_approval: true
+    path_whitelist_required: true
+
+  - name: shell_exec
+    description: Execute a shell command
+    risk_level: high
+    requires_approval: true
+    command_whitelist:
+      - "go build"
+      - "go test"
+      - "npm run"
+      - "npm test"
+      - "make"
+
+  - name: memory_write
+    description: Write a node to the memory vault
+    risk_level: low
+    requires_approval: false
+
+  - name: memory_read
+    description: Read from the memory vault
+    risk_level: low
+    requires_approval: false
+
+  - name: artifact_create
+    description: Register a new artifact
+    risk_level: low
+    requires_approval: false
+
+  - name: artifact_sign
+    description: Sign off on an artifact (verifier only)
+    risk_level: medium
+    requires_approval: false
+    requires_role: verify
+
+  - name: agent_spawn
+    description: Spawn a sub-agent
+    risk_level: medium
+    requires_approval: false
+    requires_role: lead
+
+  - name: deploy
+    description: Deploy an artifact to an external system
+    risk_level: critical
+    requires_approval: true
+    requires_human: true
+
+  - name: secret_read
+    description: Read a secret from the env store
+    risk_level: high
+    requires_approval: false
+    audit_always: true
