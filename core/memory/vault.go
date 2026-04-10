@@ -1,4 +1,4 @@
-// Package memory implements the UCLAW knowledge-graph vault backed by SQLite FTS.
+// Package memory implements the UCLAW knowledge-graph vault backed by SQLite.
 package memory
 
 import (
@@ -20,6 +20,8 @@ type Node struct {
 }
 
 // InitSchema creates the memory tables if they don't exist.
+// Uses plain SQLite tables with LIKE search for maximum compatibility
+// (avoids fts5 which is not available in all SQLite builds).
 func InitSchema() error {
 	_, err := world.DB.Exec(`
 		CREATE TABLE IF NOT EXISTS memory_nodes (
@@ -31,38 +33,38 @@ func InitSchema() error {
 			tags TEXT,
 			created_at TEXT NOT NULL
 		);
-		CREATE VIRTUAL TABLE IF NOT EXISTS memory_fts
-			USING fts5(id UNINDEXED, content, tags, content=memory_nodes, content_rowid=rowid);
+		CREATE INDEX IF NOT EXISTS idx_memory_kind ON memory_nodes(kind);
+		CREATE INDEX IF NOT EXISTS idx_memory_mission ON memory_nodes(mission_id);
 	`)
 	return err
 }
 
-// Write persists a new memory node and indexes it.
+// Write persists a new memory node.
 func Write(n *Node) error {
 	if n.CreatedAt == "" {
 		n.CreatedAt = time.Now().UTC().Format(time.RFC3339)
 	}
 	_, err := world.DB.Exec(
-		`INSERT INTO memory_nodes(id,mission_id,agent_id,kind,content,tags,created_at)
+		`INSERT OR REPLACE INTO memory_nodes(id,mission_id,agent_id,kind,content,tags,created_at)
 		 VALUES(?,?,?,?,?,?,?)`,
 		n.ID, n.MissionID, n.AgentID, n.Kind, n.Content, n.Tags, n.CreatedAt,
 	)
 	return err
 }
 
-// Search performs FTS5 full-text search over memory.
+// Search performs a LIKE-based full-text search over memory content and tags.
 func Search(query string, limit int) ([]Node, error) {
 	if limit <= 0 {
 		limit = 20
 	}
+	pattern := "%" + query + "%"
 	rows, err := world.DB.Query(
-		`SELECT m.id, m.mission_id, m.agent_id, m.kind, m.content, m.tags, m.created_at
-		 FROM memory_nodes m
-		 JOIN memory_fts f ON m.id = f.id
-		 WHERE memory_fts MATCH ?
-		 ORDER BY rank
+		`SELECT id, mission_id, agent_id, kind, content, tags, created_at
+		 FROM memory_nodes
+		 WHERE content LIKE ? OR tags LIKE ?
+		 ORDER BY created_at DESC
 		 LIMIT ?`,
-		query, limit,
+		pattern, pattern, limit,
 	)
 	if err != nil {
 		return nil, fmt.Errorf("memory: search: %w", err)
