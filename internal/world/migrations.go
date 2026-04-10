@@ -7,7 +7,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/stizzfer36-del/uclaw/internal/sqlitepy"
+	"github.com/stizzfer36-del/UCLAW/internal/sqlitepy"
 )
 
 //go:embed migrations/*.sql

@@ -9,7 +9,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/stizzfer36-del/uclaw/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
 )
 
 func servePeerTransport(ctx context.Context, cfg config.Config, listen string, log io.Writer) error {

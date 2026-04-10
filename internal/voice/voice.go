@@ -9,10 +9,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stizzfer36-del/uclaw/internal/audit"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/ids"
-	"github.com/stizzfer36-del/uclaw/internal/missions"
+	"github.com/stizzfer36-del/UCLAW/internal/audit"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/ids"
+	"github.com/stizzfer36-del/UCLAW/internal/missions"
 )
 
 type Result struct { Action string `json:"action"`; MissionID string `json:"mission_id,omitempty"`; Feedback string `json:"feedback"`; Transcript string `json:"transcript,omitempty"`; AudioPath string `json:"audio_path,omitempty"` }

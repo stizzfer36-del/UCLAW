@@ -3,6 +3,7 @@ package verification
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/stizzfer36-del/UCLAW/core/artifacts"
 	"github.com/stizzfer36-del/UCLAW/core/world"
@@ -37,6 +38,17 @@ func Approve(artifactID string) error {
 
 // Reject marks an artifact as failed.
 func Reject(artifactID, reason string) error {
-	// TODO: store reason in artifact_checks
+	if reason == "" {
+		reason = "rejected without reason"
+	}
+	now := time.Now().UTC().Format(time.RFC3339)
+	checkID := fmt.Sprintf("chk-%d", time.Now().UTC().UnixNano())
+	if _, err := world.DB.Exec(
+		`INSERT INTO artifact_checks(id, artifact_id, check_type, status, run_by, run_at, details)
+		 VALUES(?,?,?,?,?,?,?)`,
+		checkID, artifactID, "human_review", "failed", "review_queue", now, reason,
+	); err != nil {
+		return fmt.Errorf("review_queue: log rejection reason: %w", err)
+	}
 	return artifacts.SetStatus(artifactID, "failed")
 }

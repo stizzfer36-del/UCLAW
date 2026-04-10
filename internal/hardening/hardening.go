@@ -10,10 +10,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/stizzfer36-del/uclaw/internal/audit"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/missions"
-	"github.com/stizzfer36-del/uclaw/internal/policies"
+	"github.com/stizzfer36-del/UCLAW/internal/audit"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/missions"
+	"github.com/stizzfer36-del/UCLAW/internal/policies"
 )
 
 func TightenPolicy(ctx context.Context, cfg config.Config, repoRoot, toolName string) error {

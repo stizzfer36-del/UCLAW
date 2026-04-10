@@ -6,11 +6,11 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/stizzfer36-del/uclaw/internal/agents"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/ids"
-	"github.com/stizzfer36-del/uclaw/internal/missions"
-	"github.com/stizzfer36-del/uclaw/internal/sqlitepy"
+	"github.com/stizzfer36-del/UCLAW/internal/agents"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/ids"
+	"github.com/stizzfer36-del/UCLAW/internal/missions"
+	"github.com/stizzfer36-del/UCLAW/internal/sqlitepy"
 )
 
 type PlanResult struct { Lead agents.Profile `json:"lead"`; DevTeam []agents.Profile `json:"dev_team"`; VerifyTeam []agents.Profile `json:"verify_team"`; MissionID string `json:"mission_id"` }

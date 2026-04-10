@@ -9,7 +9,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stizzfer36-del/uclaw/internal/testingx"
+	"github.com/stizzfer36-del/UCLAW/internal/testingx"
 )
 
 func TestInitIsIdempotent(t *testing.T) {

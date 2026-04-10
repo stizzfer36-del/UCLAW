@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stizzfer36-del/uclaw/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
 )
 
 type peerPackage struct {

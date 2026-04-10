@@ -6,10 +6,10 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stizzfer36-del/uclaw/internal/artifacts"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/testingx"
-	"github.com/stizzfer36-del/uclaw/internal/world"
+	"github.com/stizzfer36-del/UCLAW/internal/artifacts"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/testingx"
+	"github.com/stizzfer36-del/UCLAW/internal/world"
 )
 
 func setup(t *testing.T) config.Config { t.Helper(); testingx.TempHome(t); cfg, err:=config.Load(); if err!=nil { t.Fatal(err) }; if err:=config.EnsureLayout(cfg); err!=nil { t.Fatal(err) }; if _, _, err:=world.Init(context.Background(), cfg); err!=nil { t.Fatal(err) }; return cfg }
