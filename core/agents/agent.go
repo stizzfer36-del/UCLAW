@@ -8,18 +8,18 @@ import (
 	"sync"
 	"time"
 
-	"github.com/stizzfer36-del/UCLAW/core/world"
+	"github.com/stizzfer36-del/UCLAW/core/observability"
 )
 
 // Role enumerates the agent roles enforced by the policy engine.
 type Role string
 
 const (
-	RoleDev     Role = "dev"
-	RoleVerify  Role = "verify"
+	RoleDev      Role = "dev"
+	RoleVerify   Role = "verify"
 	RoleResearch Role = "research"
-	RoleOps     Role = "ops"
-	RoleLead    Role = "lead"
+	RoleOps      Role = "ops"
+	RoleLead     Role = "lead"
 )
 
 // Agent represents a running UCLAW agent.
@@ -50,6 +50,13 @@ func Spawn(a *Agent) error {
 	a.cancel = cancel
 	Registry[a.ID] = a
 	log.Printf("[agents] spawned %s (%s/%s) mission=%s", a.ID, a.Provider, a.Model, a.Mission)
+	_ = observability.Emit(&observability.Event{
+		AgentID:   a.ID,
+		Action:    "agent.spawn",
+		Target:    a.Mission,
+		Outcome:   "ok",
+		MissionID: a.Mission,
+	})
 	go a.run(ctx)
 	return nil
 }
@@ -64,6 +71,12 @@ func Kill(id string) error {
 	}
 	a.cancel()
 	delete(Registry, id)
+	_ = observability.Emit(&observability.Event{
+		AgentID:   id,
+		Action:    "agent.kill",
+		Outcome:   "ok",
+		MissionID: a.Mission,
+	})
 	return nil
 }
 
@@ -71,16 +84,28 @@ func (a *Agent) run(ctx context.Context) {
 	defer func() {
 		if r := recover(); r != nil {
 			log.Printf("[agents] %s panicked: %v", a.ID, r)
+			_ = observability.Emit(&observability.Event{
+				AgentID:   a.ID,
+				Action:    "agent.panic",
+				Outcome:   fmt.Sprintf("%v", r),
+				MissionID: a.Mission,
+			})
 		}
 	}()
+	ticker := time.NewTicker(30 * time.Second)
+	defer ticker.Stop()
 	for {
 		select {
 		case <-ctx.Done():
 			log.Printf("[agents] %s stopped", a.ID)
 			return
-		case <-time.After(30 * time.Second):
-			// heartbeat — emit audit event
-			_ = world.DB // keep compile dep
+		case <-ticker.C:
+			_ = observability.Emit(&observability.Event{
+				AgentID:   a.ID,
+				Action:    "agent.heartbeat",
+				Outcome:   "alive",
+				MissionID: a.Mission,
+			})
 		}
 	}
 }

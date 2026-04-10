@@ -6,10 +6,14 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	_ "embed"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
+
+//go:embed schema.sql
+var schemaSQL string
 
 // DB is the shared world-state handle.
 var DB *sql.DB
@@ -28,11 +32,7 @@ func Open(dbPath string) error {
 }
 
 func applySchema() error {
-	schema, err := os.ReadFile(filepath.Join("core", "world", "schema.sql"))
-	if err != nil {
-		return fmt.Errorf("world: schema read: %w", err)
-	}
-	_, err = DB.Exec(string(schema))
+	_, err := DB.Exec(schemaSQL)
 	return err
 }
 
