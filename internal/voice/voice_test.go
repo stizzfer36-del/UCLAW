@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/testingx"
-	"github.com/stizzfer36-del/uclaw/internal/world"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/testingx"
+	"github.com/stizzfer36-del/UCLAW/internal/world"
 )
 
 func setup(t *testing.T) config.Config { t.Helper(); testingx.TempHome(t); cfg, _ := config.Load(); _ = config.EnsureLayout(cfg); _, _, _ = world.Init(context.Background(), cfg); return cfg }

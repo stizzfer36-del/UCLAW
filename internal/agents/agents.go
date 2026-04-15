@@ -9,13 +9,13 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stizzfer36-del/uclaw/internal/artifacts"
-	"github.com/stizzfer36-del/uclaw/internal/audit"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/ids"
-	"github.com/stizzfer36-del/uclaw/internal/policies"
-	"github.com/stizzfer36-del/uclaw/internal/providers"
-	"github.com/stizzfer36-del/uclaw/internal/sqlitepy"
+	"github.com/stizzfer36-del/UCLAW/internal/artifacts"
+	"github.com/stizzfer36-del/UCLAW/internal/audit"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/ids"
+	"github.com/stizzfer36-del/UCLAW/internal/policies"
+	"github.com/stizzfer36-del/UCLAW/internal/providers"
+	"github.com/stizzfer36-del/UCLAW/internal/sqlitepy"
 )
 
 type Profile struct {

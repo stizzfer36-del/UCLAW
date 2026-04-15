@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stizzfer36-del/uclaw/internal/artifacts"
-	"github.com/stizzfer36-del/uclaw/internal/audit"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/ids"
-	"github.com/stizzfer36-del/uclaw/internal/sqlitepy"
+	"github.com/stizzfer36-del/UCLAW/internal/artifacts"
+	"github.com/stizzfer36-del/UCLAW/internal/audit"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/ids"
+	"github.com/stizzfer36-del/UCLAW/internal/sqlitepy"
 )
 
 type Mission struct { ID string `json:"id"`; Title string `json:"title"`; Status string `json:"status"`; CreatedBy string `json:"created_by"`; AssignedTo string `json:"assigned_to"`; CreatedAt string `json:"created_at"`; UpdatedAt string `json:"updated_at"` }

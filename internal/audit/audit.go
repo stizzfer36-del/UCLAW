@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stizzfer36-del/uclaw/internal/ids"
+	"github.com/stizzfer36-del/UCLAW/internal/ids"
 )
 
 type Event struct { EventID string `json:"event_id"`; TraceID string `json:"trace_id,omitempty"`; Timestamp string `json:"timestamp"`; AgentID string `json:"agent_id"`; Action string `json:"action"`; Target string `json:"target,omitempty"`; Outcome string `json:"outcome"`; MissionID string `json:"mission_id,omitempty"`; Tool string `json:"tool,omitempty"`; ApprovalRequired bool `json:"approval_required"`; ApprovalGranted *bool `json:"approval_granted"`; PrevEventHash string `json:"prev_event_hash,omitempty"` }

@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/stizzfer36-del/uclaw/internal/sqlitepy"
+	"github.com/stizzfer36-del/UCLAW/internal/sqlitepy"
 )
 
 func TestMigrateUpDownClean(t *testing.T) {

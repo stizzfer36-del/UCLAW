@@ -10,10 +10,10 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/stizzfer36-del/uclaw/internal/artifacts"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/missions"
-	"github.com/stizzfer36-del/uclaw/internal/sqlitepy"
+	"github.com/stizzfer36-del/UCLAW/internal/artifacts"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/missions"
+	"github.com/stizzfer36-del/UCLAW/internal/sqlitepy"
 )
 
 type State struct { Missions []missions.Mission `json:"missions"`; Artifacts []artifacts.Artifact `json:"artifacts"`; Agents []map[string]interface{} `json:"agents"`; Approvals []map[string]interface{} `json:"approvals"`; Review []map[string]interface{} `json:"review_queue"`; Health map[string]interface{} `json:"health"`; Budget map[string]interface{} `json:"budget"`; Errors []map[string]interface{} `json:"errors"`; Timeline []missions.TimelineEvent `json:"timeline"`; Workflow []map[string]interface{} `json:"workflow_queue"` }

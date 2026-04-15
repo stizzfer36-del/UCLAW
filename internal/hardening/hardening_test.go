@@ -11,11 +11,11 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/stizzfer36-del/uclaw/internal/audit"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/missions"
-	"github.com/stizzfer36-del/uclaw/internal/testingx"
-	"github.com/stizzfer36-del/uclaw/internal/world"
+	"github.com/stizzfer36-del/UCLAW/internal/audit"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/missions"
+	"github.com/stizzfer36-del/UCLAW/internal/testingx"
+	"github.com/stizzfer36-del/UCLAW/internal/world"
 )
 
 func setup(t *testing.T) (config.Config, string) {

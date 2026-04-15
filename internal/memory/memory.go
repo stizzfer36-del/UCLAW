@@ -8,10 +8,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/stizzfer36-del/uclaw/internal/audit"
-	"github.com/stizzfer36-del/uclaw/internal/config"
-	"github.com/stizzfer36-del/uclaw/internal/ids"
-	"github.com/stizzfer36-del/uclaw/internal/sqlitepy"
+	"github.com/stizzfer36-del/UCLAW/internal/audit"
+	"github.com/stizzfer36-del/UCLAW/internal/config"
+	"github.com/stizzfer36-del/UCLAW/internal/ids"
+	"github.com/stizzfer36-del/UCLAW/internal/sqlitepy"
 )
 
 type Node struct { ID string `json:"id"`; Type string `json:"type"`; Title string `json:"title"`; MissionID string `json:"mission_id,omitempty"`; AgentID string `json:"agent_id,omitempty"`; Path string `json:"path"`; Content string `json:"content"`; Verified bool `json:"verified"`; CreatedAt string `json:"created_at"` }
